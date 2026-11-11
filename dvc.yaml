@@ -1,0 +1,46 @@
+stages:
+  unzip:
+    cmd: python -m src.unzip_data
+    deps:
+      - data/agroscan_prepared_v1.zip
+      - src/unzip_data.py
+    params:
+      - data.zip_path
+      - data.prepared_dir
+    outs:
+      - data/prepared
+
+  train:
+    cmd: python -m src.train
+    deps:
+      - data/prepared
+      - src/train.py
+      - src/data.py
+      - src/model.py
+      - src/metrics.py
+      - src/config.py
+    params:
+      - data
+      - model
+      - train
+    outs:
+      - models/model.keras
+      - models/class_names.json
+      - models/run_info.json
+    metrics:
+      - reports/train_metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+      - models/model.keras
+      - data/prepared
+      - src/evaluate.py
+      - src/data.py
+      - src/metrics.py
+    outs:
+      - reports/figures
+    metrics:
+      - reports/test_metrics.json:
+          cache: false

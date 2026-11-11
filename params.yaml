@@ -1,0 +1,31 @@
+# All settings that change results live here. DVC tracks them: change a value, run `dvc repro`, and only the affected stages re-run.
+data:
+  zip_path: data/agroscan_prepared_v1.zip
+  prepared_dir: data/prepared
+  img_size: 288
+  batch_size: 32
+  source_weights:          # share of each training batch coming from each source
+    pv: 0.35               # PlantVillage (lab photos)
+    pw: 0.50               # PlantWild (real photos)
+    pd: 0.15               # PlantDoc (real photos)
+
+model:
+  backbone: mobilenetv2    # mobilenetv2 | efficientnetv2s | convnext_tiny
+  weights: imagenet        # use null only for quick tests without internet
+  use_aug: true
+  mixed_precision: true    # faster on a GPU; set false on CPU
+
+train:
+  steps_per_epoch: 150
+  stage1_epochs: 6
+  stage2_epochs: 20
+  lr1: 0.001
+  lr2: 0.00005
+  tune_frac: 0.4           # share of backbone layers that are fine-tuned in stage 2
+  label_smoothing: 0.1
+  patience: 4
+  seed: 42
+
+mlflow:
+  experiment: agroscan
+  model_name: agroscan-classifier

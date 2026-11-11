@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# big files are tracked by DVC, not Git
+/data/prepared
+/models/model.keras
+/reports/figures
+# local MLflow store
+mlflow.db
+mlartifacts/
+mlruns/
+.env
