@@ -1,0 +1,128 @@
+schema: '2.0'
+stages:
+  unzip:
+    cmd: python -m src.unzip_data
+    deps:
+    - path: data/agroscan_prepared_v1.zip
+      hash: md5
+      md5: cd6220990aac074acfd2b4b805c6ee26
+      size: 470403825
+    - path: src/unzip_data.py
+      hash: md5
+      md5: 422917bae2d55513e8d7eb2d81b698b2
+      size: 413
+    params:
+      params.yaml:
+        data.prepared_dir: data/prepared
+        data.zip_path: data/agroscan_prepared_v1.zip
+    outs:
+    - path: data/prepared
+      hash: md5
+      md5: 66dc61288fc4398d02d2b3c88955b511.dir
+      size: 486392153
+      nfiles: 13879
+  train:
+    cmd: python -m src.train
+    deps:
+    - path: data/prepared
+      hash: md5
+      md5: 66dc61288fc4398d02d2b3c88955b511.dir
+      size: 486392153
+      nfiles: 13879
+    - path: src/config.py
+      hash: md5
+      md5: 12ba9e134dda68f85f4381ac54c98bb9
+      size: 702
+    - path: src/data.py
+      hash: md5
+      md5: a9bb460f24c7bcac05d77b608e8e4e4a
+      size: 2698
+    - path: src/metrics.py
+      hash: md5
+      md5: 360bed078ce17ae408fa126bd216c808
+      size: 2495
+    - path: src/model.py
+      hash: md5
+      md5: a87b09b1c1dd3823ba97c9eb4d15948a
+      size: 1571
+    - path: src/train.py
+      hash: md5
+      md5: 93ea10fb0cde371523f07e9392a6ea91
+      size: 4601
+    params:
+      params.yaml:
+        data:
+          zip_path: data/agroscan_prepared_v1.zip
+          prepared_dir: data/prepared
+          img_size: 288
+          batch_size: 32
+          source_weights:
+            pv: 0.35
+            pw: 0.5
+            pd: 0.15
+        model:
+          backbone: mobilenetv2
+          weights: imagenet
+          use_aug: true
+          mixed_precision: true
+        train:
+          steps_per_epoch: 150
+          stage1_epochs: 6
+          stage2_epochs: 20
+          lr1: 0.001
+          lr2: 5e-05
+          tune_frac: 0.4
+          label_smoothing: 0.1
+          patience: 4
+          seed: 42
+    outs:
+    - path: models/class_names.json
+      hash: md5
+      md5: 5fe039cc19006a4e95ec44a037c035a2
+      size: 217
+    - path: models/model.keras
+      hash: md5
+      md5: 1009868c3e0b9d33dd99ed16530743de
+      size: 47252440
+    - path: models/run_info.json
+      hash: md5
+      md5: 39076f631c4744b82729acef47611977
+      size: 80
+    - path: reports/train_metrics.json
+      hash: md5
+      md5: 4e49d22b6406ba0d0f1918c86983253a
+      size: 211
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+    - path: data/prepared
+      hash: md5
+      md5: 66dc61288fc4398d02d2b3c88955b511.dir
+      size: 486392153
+      nfiles: 13879
+    - path: models/model.keras
+      hash: md5
+      md5: 1009868c3e0b9d33dd99ed16530743de
+      size: 47252440
+    - path: src/data.py
+      hash: md5
+      md5: a9bb460f24c7bcac05d77b608e8e4e4a
+      size: 2698
+    - path: src/evaluate.py
+      hash: md5
+      md5: 0947f405ca142fa2d1834e174cefbc27
+      size: 2096
+    - path: src/metrics.py
+      hash: md5
+      md5: 360bed078ce17ae408fa126bd216c808
+      size: 2495
+    outs:
+    - path: reports/figures
+      hash: md5
+      md5: 590171d4803eb0894f43e51884c683ff.dir
+      size: 210339
+      nfiles: 4
+    - path: reports/test_metrics.json
+      hash: md5
+      md5: 0a020cc66d63045813431f81d9ceb6bf
+      size: 328

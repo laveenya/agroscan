@@ -1,0 +1,14 @@
+{
+  "pd_test_top1": 0.5694,
+  "pd_test_top3": 0.9306,
+  "pd_test_macro_f1": 0.5695,
+  "pd_test_ci_low": 0.4583,
+  "pd_test_ci_high": 0.6806,
+  "pd_test_images": 72,
+  "pw_test_top1": 0.5954,
+  "pw_test_top3": 0.875,
+  "pw_test_macro_f1": 0.5825,
+  "pw_test_ci_low": 0.5395,
+  "pw_test_ci_high": 0.6513,
+  "pw_test_images": 304
+}

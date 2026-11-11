@@ -1,0 +1,10 @@
+{
+  "train_minutes": 9.45,
+  "params_million": 2.59,
+  "pd_val_top1": 0.5102,
+  "pd_val_top3": 0.8639,
+  "pd_val_macro_f1": 0.5339,
+  "pw_val_top1": 0.6918,
+  "pw_val_top3": 0.9315,
+  "pw_val_macro_f1": 0.6697
+}
