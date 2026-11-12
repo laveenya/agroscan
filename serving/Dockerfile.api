@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY serving/requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
+COPY serving/__init__.py serving/__init__.py
+COPY serving/api serving/api
+# the model is NOT baked into the image: docker-compose mounts ./models (managed by DVC) at /app/models
+ENV MODEL_PATH=/app/models/model.keras \
+    CLASS_NAMES_PATH=/app/models/class_names.json \
+    RUN_INFO_PATH=/app/models/run_info.json \
+    PREDICTION_LOG=/app/logs/predictions.jsonl \
+    TF_CPP_MIN_LOG_LEVEL=2
+EXPOSE 8000
+CMD ["uvicorn", "serving.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

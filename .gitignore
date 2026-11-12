@@ -10,3 +10,8 @@ mlflow.db
 mlartifacts/
 mlruns/
 .env
+
+# serving
+logs/
+mlflow_data/
+.venv/

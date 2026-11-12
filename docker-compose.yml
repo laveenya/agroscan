@@ -1,0 +1,39 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: serving/Dockerfile.api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro      # model.keras, class_names.json, run_info.json
+      - ./logs:/app/logs             # prediction log used for drift monitoring
+    environment:
+      - CONFIDENCE_THRESHOLD=0.7
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  ui:
+    build:
+      context: .
+      dockerfile: serving/Dockerfile.ui
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+
+  mlflow:                             # optional dashboard: docker compose --profile tools up
+    image: ghcr.io/mlflow/mlflow:v3.18.0
+    profiles: ["tools"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_data:/mlflow        # put mlflow.db (from Colab) in ./mlflow_data
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlflow/mlruns

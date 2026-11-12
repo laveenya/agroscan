@@ -1,0 +1,7 @@
+# Use the same major TensorFlow version that trained the model (print tf.__version__ in Colab and pin it here).
+tensorflow-cpu>=2.17
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+pillow
+numpy

@@ -1,0 +1,12 @@
+.git
+.dvc/cache
+data
+reports
+mlruns
+mlartifacts
+mlflow.db
+mlflow_data
+logs
+models
+__pycache__
+*.ipynb
